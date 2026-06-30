@@ -1,0 +1,79 @@
+import dotenv from "dotenv";
+import { z } from "zod";
+
+dotenv.config();
+
+const envSchema = z.object({
+  // App
+  NODE_ENV: z.enum(["development", "production", "test"]),
+  PORT: z.coerce.number().default(5000),
+  FRONTEND_URL: z.string(),
+
+  // Database
+  DATABASE_URL: z.string(),
+
+  // Redis
+  REDIS_URL: z.string().optional(),
+
+  // JWT
+  ACCESS_TOKEN_SECRET: z.string(),
+  ACCESS_TOKEN_EXPIRES_IN: z.string(),
+
+  REFRESH_TOKEN_SECRET: z.string(),
+  REFRESH_TOKEN_EXPIRES_IN: z.string(),
+
+  // Google OAuth
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+
+  // Email
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().optional(),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  SMTP_FROM: z.string().optional(),
+
+  // Resend
+  RESEND_API_KEY: z.string().optional(),
+
+  // Cloudinary
+  CLOUDINARY_CLOUD_NAME: z.string().optional(),
+  CLOUDINARY_API_KEY: z.string().optional(),
+  CLOUDINARY_API_SECRET: z.string().optional(),
+
+  // Upload
+  MAX_JSON_SIZE: z.string().default("50mb"),
+
+  // Express
+  URL_ENCODED: z.string().default("true"),
+
+  // Rate Limit
+  RATE_LIMIT_WINDOW_MS: z.coerce.number().default(900000),
+  RATE_LIMIT_MAX_REQUESTS: z.coerce.number().default(100),
+
+  // Cache
+  ENABLE_CACHE: z.string().default("false"),
+});
+
+const parsedEnv = envSchema.safeParse(process.env);
+
+if (!parsedEnv.success) {
+  console.error(
+    "Invalid environment variables",
+    parsedEnv.error.flatten().fieldErrors
+  );
+
+  process.exit(1);
+}
+
+export const env = {
+  ...parsedEnv.data,
+
+  isProduction: parsedEnv.data.NODE_ENV === "production",
+
+  isDevelopment: parsedEnv.data.NODE_ENV === "development",
+
+  enableCache: parsedEnv.data.ENABLE_CACHE === "true",
+
+  urlEncoded: parsedEnv.data.URL_ENCODED === "true",
+};
