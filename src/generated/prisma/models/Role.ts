@@ -237,7 +237,7 @@ export type RoleCreateInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  users?: Prisma.UserCreateNestedManyWithoutRoleInput
+  users?: Prisma.UserCreateNestedManyWithoutRoleRelationInput
   permissions?: Prisma.RolePermissionCreateNestedManyWithoutRoleInput
 }
 
@@ -247,7 +247,7 @@ export type RoleUncheckedCreateInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  users?: Prisma.UserUncheckedCreateNestedManyWithoutRoleInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutRoleRelationInput
   permissions?: Prisma.RolePermissionUncheckedCreateNestedManyWithoutRoleInput
 }
 
@@ -257,7 +257,7 @@ export type RoleUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  users?: Prisma.UserUpdateManyWithoutRoleNestedInput
+  users?: Prisma.UserUpdateManyWithoutRoleRelationNestedInput
   permissions?: Prisma.RolePermissionUpdateManyWithoutRoleNestedInput
 }
 
@@ -267,7 +267,7 @@ export type RoleUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  users?: Prisma.UserUncheckedUpdateManyWithoutRoleNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutRoleRelationNestedInput
   permissions?: Prisma.RolePermissionUncheckedUpdateManyWithoutRoleNestedInput
 }
 
@@ -410,7 +410,7 @@ export type RoleCreateWithoutPermissionsInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  users?: Prisma.UserCreateNestedManyWithoutRoleInput
+  users?: Prisma.UserCreateNestedManyWithoutRoleRelationInput
 }
 
 export type RoleUncheckedCreateWithoutPermissionsInput = {
@@ -419,7 +419,7 @@ export type RoleUncheckedCreateWithoutPermissionsInput = {
   description?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  users?: Prisma.UserUncheckedCreateNestedManyWithoutRoleInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutRoleRelationInput
 }
 
 export type RoleCreateOrConnectWithoutPermissionsInput = {
@@ -444,7 +444,7 @@ export type RoleUpdateWithoutPermissionsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  users?: Prisma.UserUpdateManyWithoutRoleNestedInput
+  users?: Prisma.UserUpdateManyWithoutRoleRelationNestedInput
 }
 
 export type RoleUncheckedUpdateWithoutPermissionsInput = {
@@ -453,7 +453,7 @@ export type RoleUncheckedUpdateWithoutPermissionsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  users?: Prisma.UserUncheckedUpdateManyWithoutRoleNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutRoleRelationNestedInput
 }
 
 

@@ -259,10 +259,11 @@ export type StockReservationOrderByWithRelationInput = {
 
 export type StockReservationWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  orderId?: string
+  orderId_variantId_warehouseId?: Prisma.StockReservationOrderIdVariantIdWarehouseIdCompoundUniqueInput
   AND?: Prisma.StockReservationWhereInput | Prisma.StockReservationWhereInput[]
   OR?: Prisma.StockReservationWhereInput[]
   NOT?: Prisma.StockReservationWhereInput | Prisma.StockReservationWhereInput[]
+  orderId?: Prisma.StringFilter<"StockReservation"> | string
   quantity?: Prisma.IntFilter<"StockReservation"> | number
   variantId?: Prisma.StringFilter<"StockReservation"> | string
   warehouseId?: Prisma.StringFilter<"StockReservation"> | string
@@ -271,7 +272,7 @@ export type StockReservationWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"StockReservation"> | Date | string
   variant?: Prisma.XOR<Prisma.ProductVariantScalarRelationFilter, Prisma.ProductVariantWhereInput>
   warehouse?: Prisma.XOR<Prisma.WarehouseScalarRelationFilter, Prisma.WarehouseWhereInput>
-}, "id" | "orderId">
+}, "id" | "orderId_variantId_warehouseId">
 
 export type StockReservationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -386,6 +387,12 @@ export type StockReservationListRelationFilter = {
 
 export type StockReservationOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type StockReservationOrderIdVariantIdWarehouseIdCompoundUniqueInput = {
+  orderId: string
+  variantId: string
+  warehouseId: string
 }
 
 export type StockReservationCountOrderByAggregateInput = {

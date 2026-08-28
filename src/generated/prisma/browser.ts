@@ -48,6 +48,21 @@ export type Session = Prisma.SessionModel
  */
 export type RefreshToken = Prisma.RefreshTokenModel
 /**
+ * Model Account
+ * 
+ */
+export type Account = Prisma.AccountModel
+/**
+ * Model Verification
+ * 
+ */
+export type Verification = Prisma.VerificationModel
+/**
+ * Model VendorProfile
+ * 
+ */
+export type VendorProfile = Prisma.VendorProfileModel
+/**
  * Model Category
  * 
  */
@@ -87,6 +102,11 @@ export type VariantAttribute = Prisma.VariantAttributeModel
  * 
  */
 export type ProductImage = Prisma.ProductImageModel
+/**
+ * Model Review
+ * 
+ */
+export type Review = Prisma.ReviewModel
 /**
  * Model CustomerProfile
  * 

@@ -57,6 +57,9 @@ export const ModelName = {
   RolePermission: 'RolePermission',
   Session: 'Session',
   RefreshToken: 'RefreshToken',
+  Account: 'Account',
+  Verification: 'Verification',
+  VendorProfile: 'VendorProfile',
   Category: 'Category',
   Brand: 'Brand',
   Product: 'Product',
@@ -65,6 +68,7 @@ export const ModelName = {
   AttributeValue: 'AttributeValue',
   VariantAttribute: 'VariantAttribute',
   ProductImage: 'ProductImage',
+  Review: 'Review',
   CustomerProfile: 'CustomerProfile',
   Address: 'Address',
   Wishlist: 'Wishlist',
@@ -142,15 +146,18 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
+  name: 'name',
   firstName: 'firstName',
   lastName: 'lastName',
   email: 'email',
   phone: 'phone',
   password: 'password',
-  avatar: 'avatar',
-  isEmailVerified: 'isEmailVerified',
+  image: 'image',
+  emailVerified: 'emailVerified',
   isPhoneVerified: 'isPhoneVerified',
+  isApproved: 'isApproved',
   status: 'status',
+  role: 'role',
   roleId: 'roleId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -193,6 +200,7 @@ export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnu
 
 export const SessionScalarFieldEnum = {
   id: 'id',
+  token: 'token',
   deviceName: 'deviceName',
   browser: 'browser',
   operatingSystem: 'operatingSystem',
@@ -221,6 +229,54 @@ export const RefreshTokenScalarFieldEnum = {
 } as const
 
 export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
+
+
+export const AccountScalarFieldEnum = {
+  id: 'id',
+  accountId: 'accountId',
+  providerId: 'providerId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  idToken: 'idToken',
+  accessTokenExpiresAt: 'accessTokenExpiresAt',
+  refreshTokenExpiresAt: 'refreshTokenExpiresAt',
+  scope: 'scope',
+  password: 'password',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  issuer: 'issuer'
+} as const
+
+export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+
+
+export const VerificationScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  value: 'value',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const VendorProfileScalarFieldEnum = {
+  id: 'id',
+  shopName: 'shopName',
+  shopSlug: 'shopSlug',
+  description: 'description',
+  logo: 'logo',
+  isApproved: 'isApproved',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type VendorProfileScalarFieldEnum = (typeof VendorProfileScalarFieldEnum)[keyof typeof VendorProfileScalarFieldEnum]
 
 
 export const CategoryScalarFieldEnum = {
@@ -263,6 +319,8 @@ export const ProductScalarFieldEnum = {
   sku: 'sku',
   isPublished: 'isPublished',
   isFeatured: 'isFeatured',
+  averageRating: 'averageRating',
+  reviewCount: 'reviewCount',
   metaTitle: 'metaTitle',
   metaDescription: 'metaDescription',
   categoryId: 'categoryId',
@@ -327,6 +385,7 @@ export const ProductImageScalarFieldEnum = {
   imageUrl: 'imageUrl',
   altText: 'altText',
   sortOrder: 'sortOrder',
+  isPrimary: 'isPrimary',
   productId: 'productId',
   variantId: 'variantId',
   createdAt: 'createdAt',
@@ -334,6 +393,22 @@ export const ProductImageScalarFieldEnum = {
 } as const
 
 export type ProductImageScalarFieldEnum = (typeof ProductImageScalarFieldEnum)[keyof typeof ProductImageScalarFieldEnum]
+
+
+export const ReviewScalarFieldEnum = {
+  id: 'id',
+  rating: 'rating',
+  comment: 'comment',
+  images: 'images',
+  isApproved: 'isApproved',
+  verifiedPurchase: 'verifiedPurchase',
+  productId: 'productId',
+  customerProfileId: 'customerProfileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
 
 
 export const CustomerProfileScalarFieldEnum = {
@@ -889,6 +964,8 @@ export const CouponScalarFieldEnum = {
   startsAt: 'startsAt',
   expiresAt: 'expiresAt',
   isActive: 'isActive',
+  applicableProductIds: 'applicableProductIds',
+  applicableCategoryIds: 'applicableCategoryIds',
   campaignId: 'campaignId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

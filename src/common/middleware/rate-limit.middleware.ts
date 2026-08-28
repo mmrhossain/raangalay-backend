@@ -11,3 +11,39 @@ export const limiter = rateLimit({
     message: "Too many requests. Please try again later.",
   },
 });
+
+const perEndpointLimiter = (windowMs: number, max: number, label: string) =>
+  rateLimit({
+    windowMs,
+    max,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+      success: false,
+      message: `Too many ${label} requests. Please try again later.`,
+    },
+  });
+
+export const authLimiter = perEndpointLimiter(
+  15 * 60 * 1000,
+  20,
+  "authentication"
+);
+
+export const checkoutLimiter = perEndpointLimiter(
+  15 * 60 * 1000,
+  30,
+  "checkout"
+);
+
+export const paymentLimiter = perEndpointLimiter(
+  15 * 60 * 1000,
+  40,
+  "payment"
+);
+
+export const couponLimiter = perEndpointLimiter(
+  15 * 60 * 1000,
+  20,
+  "coupon"
+);

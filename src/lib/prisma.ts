@@ -1,6 +1,7 @@
 import { env } from "../config/env";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
+import type { Prisma } from "../generated/prisma/client";
 
 // 2. Connection string
 const connectionString = env.DATABASE_URL;
@@ -32,3 +33,12 @@ export const prisma =
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
+
+export type TransactionClient = Prisma.TransactionClient;
+
+export const transaction = <T>(
+  fn: (tx: TransactionClient) => Promise<T>,
+  options?: { isolationLevel?: Prisma.TransactionIsolationLevel }
+): Promise<T> => {
+  return prisma.$transaction(fn, options);
+};

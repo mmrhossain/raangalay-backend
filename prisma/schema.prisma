@@ -16,15 +16,18 @@ datasource db {
 
 model User {
   id              String     @id @default(uuid())
+  name            String?
   firstName       String
   lastName        String?
   email           String     @unique
   phone           String?    @unique
   password        String?
-  avatar          String?
-  isEmailVerified Boolean    @default(false)
+  image           String?
+  emailVerified   Boolean    @default(false)
   isPhoneVerified Boolean    @default(false)
+  isApproved      Boolean    @default(false)
   status          UserStatus @default(ACTIVE)
+  role            UserRole   @default(CUSTOMER)
 
   sessions               Session[]
   refreshTokens          RefreshToken[]
@@ -32,14 +35,16 @@ model User {
   notificationPreference UserNotificationPreference?
   customerProfile        CustomerProfile?
   pushDevices            PushDevice[]
+  accounts               Account[]
+  vendorProfile          VendorProfile?
 
   // below comment out fields are required future plan
   // communicationEvents    CommunicationEvent[]
   // auditLogs              AuditLog[]
   // eventLogs              EventLog[]
 
-  roleId String
-  role   Role   @relation(fields: [roleId], references: [id])
+  roleId       String
+  roleRelation Role   @relation(fields: [roleId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -49,6 +54,7 @@ model User {
   @@index([phone])
   @@index([roleId])
   @@index([status])
+  @@map("user")
 }
 
 model Role {
@@ -94,6 +100,7 @@ model RolePermission {
 
 model Session {
   id              String        @id @default(uuid())
+  token           String        @unique
   deviceName      String?
   browser         String?
   operatingSystem String?
@@ -115,6 +122,7 @@ model Session {
   @@index([userId])
   @@index([status])
   @@index([expiresAt])
+  @@map("session")
 }
 
 model RefreshToken {
@@ -136,9 +144,66 @@ model RefreshToken {
   @@index([expiresAt])
 }
 
+model Account {
+  id                    String    @id @default(uuid())
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  issuer String
+
+  @@index([userId])
+  @@unique([issuer, accountId], map: "account_issuer_accountId_uidx")
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model VendorProfile {
+  id          String  @id @default(uuid())
+  shopName    String?
+  shopSlug    String  @unique
+  description String?
+  logo        String?
+  isApproved  Boolean @default(false)
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([shopSlug])
+}
+
 // End of Auth & RBAC models. Critical for security and access control.
 
 // Product Catalog models start here. Critical for core e-commerce functionality.
+
 model Category {
   id          String  @id @default(uuid())
   name        String
@@ -188,6 +253,8 @@ model Product {
   sku              String?
   isPublished      Boolean @default(false)
   isFeatured       Boolean @default(false)
+  averageRating    Float   @default(0)
+  reviewCount      Int     @default(0)
   metaTitle        String?
   metaDescription  String?
 
@@ -199,6 +266,7 @@ model Product {
 
   variants          ProductVariant[]
   images            ProductImage[]
+  reviews           Review[]
   promotionProducts PromotionProduct[]
 
   createdAt              DateTime                @default(now())
@@ -290,6 +358,7 @@ model ProductImage {
   imageUrl  String
   altText   String?
   sortOrder Int     @default(0)
+  isPrimary Boolean @default(false)
 
   productId String
   product   Product @relation(fields: [productId], references: [id])
@@ -304,9 +373,33 @@ model ProductImage {
   @@index([variantId])
 }
 
+model Review {
+  id               String   @id @default(uuid())
+  rating           Int
+  comment          String?
+  images           String[]
+  isApproved       Boolean  @default(false)
+  verifiedPurchase Boolean  @default(false)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  customerProfileId String
+  customerProfile   CustomerProfile @relation(fields: [customerProfileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, customerProfileId])
+  @@index([productId])
+  @@index([customerProfileId])
+  @@index([isApproved])
+}
+
 // End of Product Catalog models. Critical for core e-commerce functionality.
 
 // Customer & Order Management models start here. Critical for CRM, order processing, and customer experience.
+
 model CustomerProfile {
   id            String    @id @default(uuid())
   customerCode  String    @unique
@@ -326,6 +419,7 @@ model CustomerProfile {
   // fraudAlerts          FraudAlert[]
 
   wishlist   Wishlist?
+  reviews    Review[]
   // preference CustomerPreference?
   // analytics  CustomerAnalytics?
   facebookId String?
@@ -501,6 +595,7 @@ model CartActivity {
 }
 
 //For mobile app and anonymous users.
+
 model GuestCart {
   id        String @id @default(uuid())
   sessionId String @unique
@@ -798,7 +893,7 @@ model Inventory {
 
 model StockReservation {
   id       String @id @default(uuid())
-  orderId  String @unique
+  orderId  String
   quantity Int
 
   variantId String
@@ -811,6 +906,8 @@ model StockReservation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([orderId, variantId, warehouseId])
+  @@index([orderId])
   @@index([variantId])
   @@index([warehouseId])
 }
@@ -1040,6 +1137,7 @@ model ShipmentEvent {
 // end of Payment & Inventory models. Critical for payment processing, inventory management, and order fulfillment.
 
 // Promotion & Marketing models start here. Critical for customer acquisition, retention, and revenue growth.
+
 model Coupon {
   id                    String       @id @default(uuid())
   code                  String       @unique
@@ -1056,6 +1154,8 @@ model Coupon {
   startsAt              DateTime
   expiresAt             DateTime
   isActive              Boolean      @default(true)
+  applicableProductIds  String[]
+  applicableCategoryIds String[]
 
   usages CouponUsage[]
 
@@ -1904,6 +2004,7 @@ model PushDevice {
 // end of Marketplace & External System models. Critical for multi-channel selling, external system mapping, and marketplace management.
 
 // Content Management models start here. Critical for website content, SEO, and marketing.
+
 model CMSPage {
   id              String        @id @default(uuid())
   title           String
@@ -2075,6 +2176,7 @@ model SeoMetadata {
 // end of SEO & Marketing models. Critical for search engine optimization, marketing campaigns, and user engagement.
 
 // Media & Asset Management models start here. Critical for managing media assets, AI content, and digital resources.
+
 model MediaAsset {
   id       String  @id @default(uuid())
   publicId String  @unique
@@ -2209,6 +2311,13 @@ model MediaAsset {
 // end of Sales Channel & Marketplace models. Critical for multi-channel selling, marketplace management, and external system integration.
 
 // enum type start
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  VENDOR
+}
+
 enum UserStatus {
   ACTIVE
   INACTIVE
