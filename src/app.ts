@@ -11,6 +11,8 @@ import { limiter } from "./common/middleware/rate-limit.middleware.ts";
 import { notFoundHandler } from "./common/middleware/not-found.middleware.ts";
 import { globalErrorHandler } from "./common/middleware/global-error.middleware.ts";
 
+import catalogRoutes from "./modules/catalog/index.ts";
+
 const app: Application = express();
 
 /**
@@ -97,7 +99,7 @@ app.get("/health", (_, res) => {
 /**
  * API Routes
  */
-// app.use("/api/v1", );
+app.use("/api/v1", catalogRoutes);
 
 /**
  * 404 Handler

@@ -1,6 +1,6 @@
 import { prisma, transaction } from "../../lib/prisma.ts";
 import { AppError } from "../../common/errors/AppError.ts";
-import { getDefaultWarehouse, lockInventory } from "../catalog/catalog.service.ts";
+import { getDefaultWarehouse, lockInventory } from "../catalog/inventory/services/inventory.service.ts";
 import { applyCouponAtomic } from "../coupon/coupon.service.ts";
 import type { CheckoutInput } from "./cart.validator.ts";
 
