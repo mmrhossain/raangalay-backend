@@ -43,8 +43,8 @@ model User {
   // auditLogs              AuditLog[]
   // eventLogs              EventLog[]
 
-  roleId       String
-  roleRelation Role   @relation(fields: [roleId], references: [id])
+  roleId        String
+  roleRelation  Role   @relation(fields: [roleId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -54,7 +54,6 @@ model User {
   @@index([phone])
   @@index([roleId])
   @@index([status])
-  @@map("user")
 }
 
 model Role {
@@ -122,7 +121,6 @@ model Session {
   @@index([userId])
   @@index([status])
   @@index([expiresAt])
-  @@map("session")
 }
 
 model RefreshToken {
@@ -162,11 +160,7 @@ model Account {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  issuer String
-
   @@index([userId])
-  @@unique([issuer, accountId], map: "account_issuer_accountId_uidx")
-  @@map("account")
 }
 
 model Verification {
@@ -179,16 +173,15 @@ model Verification {
   updatedAt DateTime @updatedAt
 
   @@index([identifier])
-  @@map("verification")
 }
 
 model VendorProfile {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   shopName    String?
-  shopSlug    String  @unique
+  shopSlug    String   @unique
   description String?
   logo        String?
-  isApproved  Boolean @default(false)
+  isApproved  Boolean  @default(false)
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -203,7 +196,6 @@ model VendorProfile {
 // End of Auth & RBAC models. Critical for security and access control.
 
 // Product Catalog models start here. Critical for core e-commerce functionality.
-
 model Category {
   id          String  @id @default(uuid())
   name        String
@@ -374,12 +366,12 @@ model ProductImage {
 }
 
 model Review {
-  id               String   @id @default(uuid())
-  rating           Int
-  comment          String?
-  images           String[]
-  isApproved       Boolean  @default(false)
-  verifiedPurchase Boolean  @default(false)
+  id                String   @id @default(uuid())
+  rating            Int
+  comment           String?
+  images            String[]
+  isApproved        Boolean  @default(false)
+  verifiedPurchase  Boolean  @default(false)
 
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -399,7 +391,6 @@ model Review {
 // End of Product Catalog models. Critical for core e-commerce functionality.
 
 // Customer & Order Management models start here. Critical for CRM, order processing, and customer experience.
-
 model CustomerProfile {
   id            String    @id @default(uuid())
   customerCode  String    @unique
@@ -595,7 +586,6 @@ model CartActivity {
 }
 
 //For mobile app and anonymous users.
-
 model GuestCart {
   id        String @id @default(uuid())
   sessionId String @unique
@@ -1137,7 +1127,6 @@ model ShipmentEvent {
 // end of Payment & Inventory models. Critical for payment processing, inventory management, and order fulfillment.
 
 // Promotion & Marketing models start here. Critical for customer acquisition, retention, and revenue growth.
-
 model Coupon {
   id                    String       @id @default(uuid())
   code                  String       @unique
@@ -2004,7 +1993,6 @@ model PushDevice {
 // end of Marketplace & External System models. Critical for multi-channel selling, external system mapping, and marketplace management.
 
 // Content Management models start here. Critical for website content, SEO, and marketing.
-
 model CMSPage {
   id              String        @id @default(uuid())
   title           String
@@ -2176,7 +2164,6 @@ model SeoMetadata {
 // end of SEO & Marketing models. Critical for search engine optimization, marketing campaigns, and user engagement.
 
 // Media & Asset Management models start here. Critical for managing media assets, AI content, and digital resources.
-
 model MediaAsset {
   id       String  @id @default(uuid())
   publicId String  @unique
@@ -2311,7 +2298,6 @@ model MediaAsset {
 // end of Sales Channel & Marketplace models. Critical for multi-channel selling, marketplace management, and external system integration.
 
 // enum type start
-
 enum UserRole {
   CUSTOMER
   ADMIN

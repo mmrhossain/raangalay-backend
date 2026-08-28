@@ -4,8 +4,6 @@ import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
-import { toNodeHandler } from "better-auth/node";
-import { auth } from "./lib/auth.ts";
 
 import { env } from "./config/env.ts";
 import { limiter } from "./common/middleware/rate-limit.middleware.ts";
@@ -13,11 +11,7 @@ import { limiter } from "./common/middleware/rate-limit.middleware.ts";
 import { notFoundHandler } from "./common/middleware/not-found.middleware.ts";
 import { globalErrorHandler } from "./common/middleware/global-error.middleware.ts";
 
-import authRouter  from "./modules/auth/auth.routes.ts";
-
 const app: Application = express();
-
-app.all("/api/v1/auth/*splat", toNodeHandler(auth));
 
 /**
  * Trust Proxy
@@ -50,7 +44,6 @@ app.use(compression());
 app.use(
   cors({
     origin: [env.FRONTEND_URL],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,
   })
 );
@@ -104,7 +97,7 @@ app.get("/health", (_, res) => {
 /**
  * API Routes
  */
-app.use("/api/v1", authRouter);
+// app.use("/api/v1", );
 
 /**
  * 404 Handler

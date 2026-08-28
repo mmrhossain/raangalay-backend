@@ -15,6 +15,8 @@ import {
 
 const router = Router();
 
+router.all("/auth/*", toNodeHandler(auth));
+
 router.get("/auth/me", requireAuth, getMe);
 router.post(
   "/auth/vendor/apply",
