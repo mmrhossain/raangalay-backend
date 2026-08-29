@@ -12,6 +12,11 @@ import { notFoundHandler } from "./common/middleware/not-found.middleware.ts";
 import { globalErrorHandler } from "./common/middleware/global-error.middleware.ts";
 
 import catalogRoutes from "./modules/catalog/index.ts";
+<<<<<<< HEAD
+=======
+import cartRoutes from "./modules/cart/cart.routes.ts";
+import orderRoutes from "./modules/order/index.ts";
+>>>>>>> 0e15cc5 (setup authentication and email configuration)
 
 const app: Application = express();
 
@@ -100,6 +105,11 @@ app.get("/health", (_, res) => {
  * API Routes
  */
 app.use("/api/v1", catalogRoutes);
+<<<<<<< HEAD
+=======
+app.use("/api/v1", cartRoutes);
+app.use("/api/v1", orderRoutes);
+>>>>>>> 0e15cc5 (setup authentication and email configuration)
 
 /**
  * 404 Handler
