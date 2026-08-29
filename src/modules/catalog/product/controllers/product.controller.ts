@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../../../common/utils/asyncHandler.ts";
+import { requireParam } from "../../../../common/utils/requireParam.ts";
 import { successResponse } from "../../../../common/utils/response.ts";
 import {
   createProductSchema,
@@ -27,7 +28,7 @@ export const getProducts = asyncHandler(async (req: Request, res: Response) => {
 export const getProduct = asyncHandler(async (req: Request, res: Response) => {
   successResponse(
     res,
-    await getProductBySlug(req.params.slug, false),
+    await getProductBySlug(requireParam(req.params.slug, "slug"), false),
     "Product fetched"
   );
 });
@@ -44,7 +45,7 @@ export const updateProductHandler = asyncHandler(
     const input = updateProductSchema.parse(req.body);
     successResponse(
       res,
-      await updateProduct(req.params.id, input),
+      await updateProduct(requireParam(req.params.id, "id"), input),
       "Product updated"
     );
   }
@@ -52,7 +53,11 @@ export const updateProductHandler = asyncHandler(
 
 export const deleteProductHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    successResponse(res, await deleteProduct(req.params.id), "Product deleted");
+    successResponse(
+      res,
+      await deleteProduct(requireParam(req.params.id, "id")),
+      "Product deleted"
+    );
   }
 );
 
@@ -61,7 +66,7 @@ export const createVariantHandler = asyncHandler(
     const input = createVariantSchema.parse(req.body);
     successResponse(
       res,
-      await createVariant(req.params.productId, input),
+      await createVariant(requireParam(req.params.productId, "productId"), input),
       "Variant created",
       201
     );
@@ -73,7 +78,7 @@ export const updateVariantHandler = asyncHandler(
     const input = updateVariantSchema.parse(req.body);
     successResponse(
       res,
-      await updateVariant(req.params.id, input),
+      await updateVariant(requireParam(req.params.id, "id"), input),
       "Variant updated"
     );
   }
@@ -81,6 +86,10 @@ export const updateVariantHandler = asyncHandler(
 
 export const deleteVariantHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    successResponse(res, await deleteVariant(req.params.id), "Variant deleted");
+    successResponse(
+      res,
+      await deleteVariant(requireParam(req.params.id, "id")),
+      "Variant deleted"
+    );
   }
 );

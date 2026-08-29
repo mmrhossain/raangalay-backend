@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../common/utils/asyncHandler.ts";
+import { requireParam } from "../../common/utils/requireParam.ts";
 import { successResponse } from "../../common/utils/response.ts";
 import { AppError } from "../../common/errors/AppError.ts";
 import {
@@ -43,7 +44,7 @@ export const adminListUsers = asyncHandler(
 
 export const adminApproveUser = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const id = requireParam(req.params.id, "id");
     const input = approveUserSchema.parse(req.body);
     const user = await approveUser(id, input.isApproved);
 

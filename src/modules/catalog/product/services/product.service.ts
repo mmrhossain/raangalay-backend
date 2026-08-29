@@ -3,6 +3,9 @@ import { AppError } from "../../../../common/errors/AppError.ts";
 import type {
   CreateProductInput,
   CreateVariantInput,
+  ListProductsQuery,
+  UpdateProductInput,
+  UpdateVariantInput,
 } from "../validators/product.validators.ts";
 
 const publicVariantSelect = {
@@ -18,17 +21,7 @@ const publicVariantSelect = {
   },
 } as const;
 
-export const listProducts = async (query: {
-  page: number;
-  limit: number;
-  category?: string;
-  brand?: string;
-  search?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  sort: string;
-  includeInactive?: boolean;
-}) => {
+export const listProducts = async (query: ListProductsQuery) => {
   const where: Record<string, unknown> = {
     deletedAt: null,
     ...(query.includeInactive ? {} : { isPublished: true }),
@@ -158,17 +151,49 @@ export const createProduct = async (input: CreateProductInput) => {
 
   return prisma.product.create({
     data: {
-      ...input,
+      name: input.name,
+      slug: input.slug,
+      isPublished: input.isPublished,
+      isFeatured: input.isFeatured,
+      categoryId: input.categoryId,
       brandId: input.brandId ?? null,
+      shortDescription: input.shortDescription ?? null,
+      description: input.description ?? null,
+      sku: input.sku ?? null,
+      metaTitle: input.metaTitle ?? null,
+      metaDescription: input.metaDescription ?? null,
     },
   });
 };
 
-export const updateProduct = async (id: string, input: Partial<CreateProductInput>) => {
+export const updateProduct = async (id: string, input: UpdateProductInput) => {
   const existing = await prisma.product.findUnique({ where: { id } });
   if (!existing) throw new AppError("Product not found", 404);
 
-  return prisma.product.update({ where: { id }, data: input });
+  return prisma.product.update({
+    where: { id },
+    data: {
+      ...(input.name !== undefined && { name: input.name }),
+      ...(input.slug !== undefined && { slug: input.slug }),
+      ...(input.isPublished !== undefined && { isPublished: input.isPublished }),
+      ...(input.isFeatured !== undefined && { isFeatured: input.isFeatured }),
+      ...(input.categoryId !== undefined && {
+        category: { connect: { id: input.categoryId } },
+      }),
+      ...(input.brandId !== undefined &&
+        input.brandId !== null && { brand: { connect: { id: input.brandId } } }),
+      ...(input.brandId === null && { brand: { disconnect: true } }),
+      ...(input.shortDescription !== undefined && {
+        shortDescription: input.shortDescription,
+      }),
+      ...(input.description !== undefined && { description: input.description }),
+      ...(input.sku !== undefined && { sku: input.sku }),
+      ...(input.metaTitle !== undefined && { metaTitle: input.metaTitle }),
+      ...(input.metaDescription !== undefined && {
+        metaDescription: input.metaDescription,
+      }),
+    },
+  });
 };
 
 export const deleteProduct = async (id: string) => {
@@ -197,8 +222,16 @@ export const createVariant = async (productId: string, input: CreateVariantInput
   return transaction(async (tx) => {
     const variant = await tx.productVariant.create({
       data: {
-        ...variantData,
+        sku: variantData.sku,
+        price: variantData.price,
+        isDefault: variantData.isDefault,
         productId,
+        ...(variantData.barcode !== undefined && { barcode: variantData.barcode }),
+        ...(variantData.compareAtPrice !== undefined && {
+          compareAtPrice: variantData.compareAtPrice,
+        }),
+        ...(variantData.costPrice !== undefined && { costPrice: variantData.costPrice }),
+        ...(variantData.weight !== undefined && { weight: variantData.weight }),
       },
     });
 
@@ -220,7 +253,13 @@ export const createVariant = async (productId: string, input: CreateVariantInput
 
     if (images?.length) {
       await tx.productImage.createMany({
-        data: images.map((img) => ({ ...img, productId, variantId: variant.id })),
+        data: images.map((img) => ({
+          imageUrl: img.imageUrl,
+          isPrimary: img.isPrimary,
+          altText: img.altText ?? null,
+          productId,
+          variantId: variant.id,
+        })),
       });
     }
 
@@ -233,7 +272,7 @@ export const createVariant = async (productId: string, input: CreateVariantInput
 
 export const updateVariant = async (
   id: string,
-  input: Partial<CreateVariantInput>
+  input: UpdateVariantInput
 ) => {
   const existing = await prisma.productVariant.findUnique({ where: { id } });
   if (!existing) throw new AppError("Variant not found", 404);
@@ -257,7 +296,17 @@ export const updateVariant = async (
   return transaction(async (tx) => {
     const variant = await tx.productVariant.update({
       where: { id },
-      data: variantData,
+      data: {
+        ...(variantData.sku !== undefined && { sku: variantData.sku }),
+        ...(variantData.price !== undefined && { price: variantData.price }),
+        ...(variantData.isDefault !== undefined && { isDefault: variantData.isDefault }),
+        ...(variantData.barcode !== undefined && { barcode: variantData.barcode }),
+        ...(variantData.compareAtPrice !== undefined && {
+          compareAtPrice: variantData.compareAtPrice,
+        }),
+        ...(variantData.costPrice !== undefined && { costPrice: variantData.costPrice }),
+        ...(variantData.weight !== undefined && { weight: variantData.weight }),
+      },
     });
 
     if (attributeValueIds) {

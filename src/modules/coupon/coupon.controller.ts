@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../common/utils/asyncHandler.ts";
+import { requireParam } from "../../common/utils/requireParam.ts";
 import { successResponse } from "../../common/utils/response.ts";
 import { AppError } from "../../common/errors/AppError.ts";
 import {
@@ -54,12 +55,20 @@ export const adminCreateCoupon = asyncHandler(
 export const adminUpdateCoupon = asyncHandler(
   async (req: Request, res: Response) => {
     const input = updateCouponSchema.parse(req.body);
-    successResponse(res, await updateCoupon(req.params.id, input), "Coupon updated");
+    successResponse(
+      res,
+      await updateCoupon(requireParam(req.params.id, "id"), input),
+      "Coupon updated"
+    );
   }
 );
 
 export const adminDeleteCoupon = asyncHandler(
   async (req: Request, res: Response) => {
-    successResponse(res, await deleteCoupon(req.params.id), "Coupon deleted");
+    successResponse(
+      res,
+      await deleteCoupon(requireParam(req.params.id, "id")),
+      "Coupon deleted"
+    );
   }
 );

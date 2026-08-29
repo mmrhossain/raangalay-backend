@@ -1,4 +1,5 @@
 import { prisma, transaction } from "../../lib/prisma.ts";
+import type { Prisma } from "../../generated/prisma/client.ts";
 import { AppError } from "../../common/errors/AppError.ts";
 import { getDefaultWarehouse, lockInventory } from "../catalog/inventory/services/inventory.service.ts";
 import { applyCouponAtomic } from "../coupon/coupon.service.ts";
@@ -224,12 +225,14 @@ export const saveGuestCart = async (
   sessionId: string,
   cartData: unknown
 ) => {
+  const data = cartData as Prisma.InputJsonValue;
+
   return prisma.guestCart.upsert({
     where: { sessionId },
-    update: { cartData },
+    update: { cartData: data },
     create: {
       sessionId,
-      cartData,
+      cartData: data,
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     },
   });
@@ -309,6 +312,19 @@ const generateOrderNumber = () => {
   const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
   return `ORD-${ts}-${rand}`;
 };
+
+const toNullableAddress = (a: CheckoutInput["billingAddress"]) => ({
+  fullName: a.fullName,
+  phone: a.phone,
+  email: a.email ?? null,
+  country: a.country,
+  state: a.state ?? null,
+  city: a.city,
+  area: a.area ?? null,
+  postalCode: a.postalCode ?? null,
+  addressLine1: a.addressLine1,
+  addressLine2: a.addressLine2 ?? null,
+});
 
 export const checkout = async (
   customerProfileId: string,
@@ -432,7 +448,7 @@ export const checkout = async (
         taxAmount,
         shippingAmount,
         grandTotal,
-        notes: input.notes,
+        notes: input.notes ?? null,
         customerProfileId,
         items: {
           create: cart.items.map((item) => ({
@@ -447,9 +463,9 @@ export const checkout = async (
             variantId: item.variantId,
           })),
         },
-        billingAddress: { create: input.billingAddress },
+        billingAddress: { create: toNullableAddress(input.billingAddress) },
         ...(input.shippingAddress && {
-          shippingAddress: { create: input.shippingAddress },
+          shippingAddress: { create: toNullableAddress(input.shippingAddress) },
         }),
         statusHistory: {
           create: { status: "PENDING", remarks: "Order created" },

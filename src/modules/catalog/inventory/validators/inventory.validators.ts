@@ -38,3 +38,4 @@ export type CreateInventoryAdjustmentInput = z.infer<
 export type CreateInventoryTransferInput = z.infer<
   typeof createInventoryTransferSchema
 >;
+export type ListInventoryQuery = z.infer<typeof listInventoryQuerySchema>;

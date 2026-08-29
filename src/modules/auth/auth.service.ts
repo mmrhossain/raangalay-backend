@@ -1,6 +1,9 @@
 import { prisma } from "../../lib/prisma.ts";
 import { AppError } from "../../common/errors/AppError.ts";
-import type { VendorApplyInput } from "./auth.validator.ts";
+import type {
+  AdminListUsersQuery,
+  VendorApplyInput,
+} from "./auth.validator.ts";
 
 export const applyAsVendor = async (userId: string, input: VendorApplyInput) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -21,8 +24,8 @@ export const applyAsVendor = async (userId: string, input: VendorApplyInput) => 
     data: {
       shopName: input.shopName,
       shopSlug: input.shopSlug,
-      description: input.description,
-      logo: input.logo,
+      description: input.description ?? null,
+      logo: input.logo ?? null,
       userId,
     },
   });
@@ -35,15 +38,10 @@ export const applyAsVendor = async (userId: string, input: VendorApplyInput) => 
   return vendorProfile;
 };
 
-export const listUsers = async (query: {
-  page: number;
-  limit: number;
-  role?: string;
-  status?: string;
-}) => {
+export const listUsers = async (query: AdminListUsersQuery) => {
   const where = {
-    ...(query.role && { role: query.role as "CUSTOMER" | "ADMIN" | "VENDOR" }),
-    ...(query.status && { status: query.status as "ACTIVE" | "INACTIVE" | "BLOCKED" }),
+    ...(query.role && { role: query.role }),
+    ...(query.status && { status: query.status }),
   };
 
   const [users, total] = await Promise.all([

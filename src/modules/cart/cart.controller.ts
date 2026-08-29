@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../common/utils/asyncHandler.ts";
+import { requireParam } from "../../common/utils/requireParam.ts";
 import { successResponse } from "../../common/utils/response.ts";
 import { AppError } from "../../common/errors/AppError.ts";
 import { getOrCreateCustomerProfile } from "../../common/utils/customerProfile.ts";
@@ -52,7 +53,11 @@ export const updateItemHandler = asyncHandler(
     const customerProfile = await getOrCreateCustomerProfile(req.auth.user.id);
     successResponse(
       res,
-      await updateItemQuantity(customerProfile.id, req.params.variantId, input.quantity),
+      await updateItemQuantity(
+        customerProfile.id,
+        requireParam(req.params.variantId, "variantId"),
+        input.quantity
+      ),
       "Cart item updated"
     );
   }
@@ -65,7 +70,7 @@ export const removeItemHandler = asyncHandler(
     const customerProfile = await getOrCreateCustomerProfile(req.auth.user.id);
     successResponse(
       res,
-      await removeItem(customerProfile.id, req.params.variantId),
+      await removeItem(customerProfile.id, requireParam(req.params.variantId, "variantId")),
       "Item removed from cart"
     );
   }

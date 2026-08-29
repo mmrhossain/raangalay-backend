@@ -54,4 +54,7 @@ export const listProductsQuerySchema = z.object({
 });
 
 export type CreateProductInput = z.infer<typeof createProductSchema>;
+export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 export type CreateVariantInput = z.infer<typeof createVariantSchema>;
+export type UpdateVariantInput = z.infer<typeof updateVariantSchema>;
+export type ListProductsQuery = z.infer<typeof listProductsQuerySchema>;

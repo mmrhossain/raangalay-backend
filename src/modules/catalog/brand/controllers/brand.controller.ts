@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../../../common/utils/asyncHandler.ts";
+import { requireParam } from "../../../../common/utils/requireParam.ts";
 import { successResponse } from "../../../../common/utils/response.ts";
 import {
   createBrandSchema,
@@ -26,12 +27,20 @@ export const createBrandHandler = asyncHandler(
 export const updateBrandHandler = asyncHandler(
   async (req: Request, res: Response) => {
     const input = updateBrandSchema.parse(req.body);
-    successResponse(res, await updateBrand(req.params.id, input), "Brand updated");
+    successResponse(
+      res,
+      await updateBrand(requireParam(req.params.id, "id"), input),
+      "Brand updated"
+    );
   }
 );
 
 export const deleteBrandHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    successResponse(res, await deleteBrand(req.params.id), "Brand deleted");
+    successResponse(
+      res,
+      await deleteBrand(requireParam(req.params.id, "id")),
+      "Brand deleted"
+    );
   }
 );

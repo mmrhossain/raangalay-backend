@@ -1,6 +1,9 @@
 import { prisma } from "../../../../lib/prisma.ts";
 import { AppError } from "../../../../common/errors/AppError.ts";
-import type { CreateCategoryInput } from "../validators/category.validators.ts";
+import type {
+  CreateCategoryInput,
+  UpdateCategoryInput,
+} from "../validators/category.validators.ts";
 
 export const listCategories = async () => {
   return prisma.category.findMany({
@@ -22,10 +25,19 @@ export const createCategory = async (input: CreateCategoryInput) => {
   const existing = await prisma.category.findUnique({ where: { slug: input.slug } });
   if (existing) throw new AppError("Category slug already exists", 409);
 
-  return prisma.category.create({ data: input });
+  return prisma.category.create({
+    data: {
+      name: input.name,
+      slug: input.slug,
+      isActive: input.isActive,
+      description: input.description ?? null,
+      image: input.image ?? null,
+      ...(input.parentId !== undefined && { parentId: input.parentId }),
+    },
+  });
 };
 
-export const updateCategory = async (id: string, input: Partial<CreateCategoryInput>) => {
+export const updateCategory = async (id: string, input: UpdateCategoryInput) => {
   const existing = await prisma.category.findUnique({ where: { id } });
   if (!existing) throw new AppError("Category not found", 404);
 
@@ -34,7 +46,17 @@ export const updateCategory = async (id: string, input: Partial<CreateCategoryIn
     if (slugTaken) throw new AppError("Category slug already exists", 409);
   }
 
-  return prisma.category.update({ where: { id }, data: input });
+  return prisma.category.update({
+    where: { id },
+    data: {
+      ...(input.name !== undefined && { name: input.name }),
+      ...(input.slug !== undefined && { slug: input.slug }),
+      ...(input.isActive !== undefined && { isActive: input.isActive }),
+      ...(input.description !== undefined && { description: input.description }),
+      ...(input.image !== undefined && { image: input.image }),
+      ...(input.parentId !== undefined && { parentId: input.parentId }),
+    },
+  });
 };
 
 export const deleteCategory = async (id: string) => {

@@ -30,3 +30,4 @@ export const listCouponsQuerySchema = z.object({
 });
 
 export type CreateCouponInput = z.infer<typeof createCouponSchema>;
+export type UpdateCouponInput = z.infer<typeof updateCouponSchema>;

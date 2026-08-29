@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../../../common/utils/asyncHandler.ts";
+import { requireParam } from "../../../../common/utils/requireParam.ts";
 import { successResponse } from "../../../../common/utils/response.ts";
 import { AppError } from "../../../../common/errors/AppError.ts";
 import {
@@ -44,7 +45,11 @@ export const approveAdjustmentHandler = asyncHandler(
     const input = approveInventoryAdjustmentSchema.parse(req.body);
     successResponse(
       res,
-      await approveInventoryAdjustment(req.params.id, input.approved, req.auth.user.id),
+      await approveInventoryAdjustment(
+        requireParam(req.params.id, "id"),
+        input.approved,
+        req.auth.user.id
+      ),
       "Inventory adjustment processed"
     );
   }
@@ -76,7 +81,10 @@ export const completeTransferHandler = asyncHandler(
 
     successResponse(
       res,
-      await completeInventoryTransfer(req.params.id, req.auth.user.id),
+      await completeInventoryTransfer(
+        requireParam(req.params.id, "id"),
+        req.auth.user.id
+      ),
       "Inventory transfer completed"
     );
   }

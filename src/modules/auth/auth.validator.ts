@@ -23,3 +23,4 @@ export const adminListUsersQuerySchema = z.object({
 
 export type VendorApplyInput = z.infer<typeof vendorApplySchema>;
 export type ApproveUserInput = z.infer<typeof approveUserSchema>;
+export type AdminListUsersQuery = z.infer<typeof adminListUsersQuerySchema>;

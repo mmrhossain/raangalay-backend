@@ -3,6 +3,7 @@ import { AppError } from "../../../../common/errors/AppError.ts";
 import type {
   CreateInventoryAdjustmentInput,
   CreateInventoryTransferInput,
+  ListInventoryQuery,
 } from "../validators/inventory.validators.ts";
 
 export const getDefaultWarehouse = async (tx?: TransactionClient) => {
@@ -28,13 +29,7 @@ export const lockInventory = async (
   return rows[0] ?? null;
 };
 
-export const listInventory = async (query: {
-  page: number;
-  limit: number;
-  warehouseId?: string;
-  variantId?: string;
-  lowStockOnly?: boolean;
-}) => {
+export const listInventory = async (query: ListInventoryQuery) => {
   const where: Record<string, unknown> = {
     ...(query.warehouseId && { warehouseId: query.warehouseId }),
     ...(query.variantId && { variantId: query.variantId }),
@@ -214,7 +209,7 @@ export const createInventoryTransfer = async (
       data: {
         fromWarehouseId: input.fromWarehouseId,
         toWarehouseId: input.toWarehouseId,
-        remarks: input.remarks,
+        remarks: input.remarks ?? null,
         items: {
           create: input.items.map((item) => ({
             variantId: item.variantId,

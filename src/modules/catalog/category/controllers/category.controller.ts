@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { asyncHandler } from "../../../../common/utils/asyncHandler.ts";
+import { requireParam } from "../../../../common/utils/requireParam.ts";
 import { successResponse } from "../../../../common/utils/response.ts";
 import {
   createCategorySchema,
@@ -28,7 +29,7 @@ export const updateCategoryHandler = asyncHandler(
     const input = updateCategorySchema.parse(req.body);
     successResponse(
       res,
-      await updateCategory(req.params.id, input),
+      await updateCategory(requireParam(req.params.id, "id"), input),
       "Category updated"
     );
   }
@@ -36,6 +37,10 @@ export const updateCategoryHandler = asyncHandler(
 
 export const deleteCategoryHandler = asyncHandler(
   async (req: Request, res: Response) => {
-    successResponse(res, await deleteCategory(req.params.id), "Category deleted");
+    successResponse(
+      res,
+      await deleteCategory(requireParam(req.params.id, "id")),
+      "Category deleted"
+    );
   }
 );
