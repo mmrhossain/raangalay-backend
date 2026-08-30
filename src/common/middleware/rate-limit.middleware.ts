@@ -47,3 +47,9 @@ export const couponLimiter = perEndpointLimiter(
   20,
   "coupon"
 );
+
+export const reviewLimiter = perEndpointLimiter(
+  15 * 60 * 1000,
+  20,
+  "review submission"
+);

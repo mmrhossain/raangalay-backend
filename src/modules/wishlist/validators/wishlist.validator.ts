@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const addWishlistItemSchema = z.object({
-  productId: z.string().min(1),
+  variantId: z.string().min(1),
 });
 
 export const listWishlistQuerySchema = z.object({
