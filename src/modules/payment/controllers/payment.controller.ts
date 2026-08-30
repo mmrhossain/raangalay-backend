@@ -4,11 +4,24 @@ import { requireParam } from "../../../common/utils/requireParam.ts";
 import { successResponse } from "../../../common/utils/response.ts";
 import { AppError } from "../../../common/errors/AppError.ts";
 import { getOrCreateCustomerProfile } from "../../../common/utils/customerProfile.ts";
-import { initiatePaymentSchema } from "../validators/payment.validators.ts";
 import {
-  initiatePayment,
+  initiatePaymentSchema,
+  refundSchema,
+  sslcommerzFailCancelSchema,
+  sslcommerzIpnSchema,
+  sslcommerzSuccessSchema,
+} from "../validators/payment.validators.ts";
+import {
   collectCodPayment,
+  createRefund,
+  initiatePayment,
 } from "../services/payment.service.ts";
+import {
+  handleSslcommerzCancel,
+  handleSslcommerzFail,
+  handleSslcommerzIpn,
+  handleSslcommerzSuccess,
+} from "../services/sslcommerz.service.ts";
 
 export const initiatePaymentHandler = asyncHandler(
   async (req: Request, res: Response) => {
@@ -42,5 +55,60 @@ export const collectCodPaymentHandler = asyncHandler(
       ),
       "Payment collected"
     );
+  }
+);
+
+export const refundPaymentHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    if (!req.auth) throw new AppError("Unauthorized", 401);
+
+    const input = refundSchema.parse(req.body);
+
+    successResponse(
+      res,
+      await createRefund(
+        requireParam(req.params.paymentId, "paymentId"),
+        input,
+        req.auth.user.id
+      ),
+      "Refund created",
+      201
+    );
+  }
+);
+
+export const sslcommerzSuccessHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const input = sslcommerzSuccessSchema.parse(req.body);
+
+    successResponse(
+      res,
+      await handleSslcommerzSuccess(input),
+      "Payment verified"
+    );
+  }
+);
+
+export const sslcommerzFailHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const input = sslcommerzFailCancelSchema.parse(req.body);
+
+    successResponse(res, await handleSslcommerzFail(input), "Payment failed");
+  }
+);
+
+export const sslcommerzCancelHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const input = sslcommerzFailCancelSchema.parse(req.body);
+
+    successResponse(res, await handleSslcommerzCancel(input), "Payment cancelled");
+  }
+);
+
+export const sslcommerzIpnHandler = asyncHandler(
+  async (req: Request, res: Response) => {
+    const input = sslcommerzIpnSchema.parse(req.body);
+
+    successResponse(res, await handleSslcommerzIpn(input), "IPN processed");
   }
 );

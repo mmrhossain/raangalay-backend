@@ -742,6 +742,7 @@ model PaymentWebhookLog {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([provider, externalEventId])
   @@index([provider])
   @@index([processed])
 }
@@ -2287,6 +2288,7 @@ enum PaymentMethod {
 
 enum PaymentTransactionStatus {
   PENDING
+  INITIATED
   PROCESSING
   SUCCESS
   FAILED

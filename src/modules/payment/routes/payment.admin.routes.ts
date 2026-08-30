@@ -3,7 +3,10 @@ import {
   requireAuth,
   requireRole,
 } from "../../../common/middleware/auth.middleware.ts";
-import { collectCodPaymentHandler } from "../controllers/payment.controller.ts";
+import {
+  collectCodPaymentHandler,
+  refundPaymentHandler,
+} from "../controllers/payment.controller.ts";
 
 const router = Router();
 
@@ -13,6 +16,12 @@ router.post(
   "/admin/payments/cod/:paymentId/collect",
   ...adminOnly,
   collectCodPaymentHandler
+);
+
+router.post(
+  "/admin/payments/:paymentId/refund",
+  ...adminOnly,
+  refundPaymentHandler
 );
 
 export default router;

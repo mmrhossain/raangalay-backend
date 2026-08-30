@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors/AppError.ts";
+import { ZodError } from "zod";
 import { logger } from "../utils/logger.ts";
 
 export const globalErrorHandler = (
@@ -15,6 +16,12 @@ export const globalErrorHandler = (
   if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
+  }
+
+  // Handle Zod validation errors
+  if (err instanceof ZodError) {
+    statusCode = 400;
+    message = "Validation failed";
   }
 
   // Log error (important for production debugging)

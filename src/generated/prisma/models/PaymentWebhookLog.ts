@@ -226,6 +226,7 @@ export type PaymentWebhookLogOrderByWithRelationInput = {
 
 export type PaymentWebhookLogWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  provider_externalEventId?: Prisma.PaymentWebhookLogProviderExternalEventIdCompoundUniqueInput
   AND?: Prisma.PaymentWebhookLogWhereInput | Prisma.PaymentWebhookLogWhereInput[]
   OR?: Prisma.PaymentWebhookLogWhereInput[]
   NOT?: Prisma.PaymentWebhookLogWhereInput | Prisma.PaymentWebhookLogWhereInput[]
@@ -237,7 +238,7 @@ export type PaymentWebhookLogWhereUniqueInput = Prisma.AtLeast<{
   processedAt?: Prisma.DateTimeNullableFilter<"PaymentWebhookLog"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PaymentWebhookLog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"PaymentWebhookLog"> | Date | string
-}, "id">
+}, "id" | "provider_externalEventId">
 
 export type PaymentWebhookLogOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -351,6 +352,11 @@ export type PaymentWebhookLogUncheckedUpdateManyInput = {
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PaymentWebhookLogProviderExternalEventIdCompoundUniqueInput = {
+  provider: string
+  externalEventId: string
 }
 
 export type PaymentWebhookLogCountOrderByAggregateInput = {
