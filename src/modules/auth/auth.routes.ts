@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { toNodeHandler } from "better-auth/node";
 import { auth } from "../../lib/auth.ts";
 import {
   requireAuth,
@@ -15,9 +14,8 @@ import {
 
 const router = Router();
 
-router.all("/auth/*", toNodeHandler(auth));
 
-router.get("/auth/me", requireAuth, getMe);
+
 router.post(
   "/auth/vendor/apply",
   authLimiter,

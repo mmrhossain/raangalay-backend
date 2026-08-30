@@ -1,8 +1,13 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { bearer } from "better-auth/plugins";
+import { jwt } from "better-auth/plugins"
 import { prisma } from "./prisma.ts";
 import { env } from "../config/env.ts";
+import { Resend } from 'resend';
+
+const resend = new Resend(env.RESEND_API_KEY);
+
+
 
 export const auth = betterAuth({
   appName: "raangalay",
@@ -15,57 +20,43 @@ export const auth = betterAuth({
   trustedOrigins: [env.FRONTEND_URL],
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false,
+    requireEmailVerification: true,
     minPasswordLength: 8,
     sendResetPassword: async ({ user, url }) => {
-      // Email provider plug-in point. In production, send via SMTP/Resend.
-      console.log(`[auth] password reset requested for ${user.email}: ${url}`);
+      void resend.emails.send({
+        from: 'Acme <onboarding@example.com>',
+        to: user.email,
+        subject: 'Reset your password',
+        html: `Click <a href="${url}">here</a> to reset your password.`,
+      });
     },
   },
-  user: {
-    additionalFields: {
-      role: {
-        type: "string",
-        required: false,
-        defaultValue: "CUSTOMER",
-        input: false,
-      },
-      isApproved: {
-        type: "boolean",
-        required: false,
-        defaultValue: false,
-        input: false,
-      },
+
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      void resend.emails.send({
+        from: 'Acme <info.mmrhossain@gmail.com>',
+        to: user.email,
+        subject: 'Verify your email address',
+        html: `Click <a href="${url}">here</a> to verify your email.`,
+      });
     },
   },
-  databaseHooks: {
-    user: {
-      create: {
-        before: async (user) => {
-          const customerRole = await prisma.role.findUnique({
-            where: { name: "CUSTOMER" },
-          });
 
-          if (!customerRole) {
-            throw new Error(
-              "[auth] default CUSTOMER role not found. Run `npm run seed` first."
-            );
-          }
-
-          const firstName = (user.name as string | undefined)
-            ?.trim()
-            .split(/\s+/)[0];
-
-          return {
-            data: {
-              ...user,
-              firstName: firstName ?? "",
-              roleId: customerRole.id,
-            },
-          };
-        },
+  socialProviders: {
+    google:{
+      clientId: env.GOOGLE_CLIENT_ID as string,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      mapProfileToUser: (profile) => {
+        return {
+          firstName: profile.name.split(" ")[0],
+          lastName: profile.name.split(" ")[1],
+        };
       },
-    },
+    }
   },
-  plugins: [bearer()],
+  advanced: {
+    cookiePrefix: "rangalay"
+  },
+  plugins: [jwt()],
 });

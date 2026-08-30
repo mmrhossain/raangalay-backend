@@ -10,15 +10,18 @@ import { limiter } from "./common/middleware/rate-limit.middleware.ts";
 
 import { notFoundHandler } from "./common/middleware/not-found.middleware.ts";
 import { globalErrorHandler } from "./common/middleware/global-error.middleware.ts";
+import { toNodeHandler } from "better-auth/node";
+
 
 import catalogRoutes from "./modules/catalog/index.ts";
-<<<<<<< HEAD
-=======
 import cartRoutes from "./modules/cart/cart.routes.ts";
 import orderRoutes from "./modules/order/index.ts";
->>>>>>> 0e15cc5 (setup authentication and email configuration)
+import paymentRoutes from "./modules/payment/index.ts";
+import {auth} from "./lib/auth.ts";
 
 const app: Application = express();
+
+app.all("/api/v1/auth/*splat", toNodeHandler(auth));
 
 /**
  * Trust Proxy
@@ -105,11 +108,9 @@ app.get("/health", (_, res) => {
  * API Routes
  */
 app.use("/api/v1", catalogRoutes);
-<<<<<<< HEAD
-=======
 app.use("/api/v1", cartRoutes);
 app.use("/api/v1", orderRoutes);
->>>>>>> 0e15cc5 (setup authentication and email configuration)
+app.use("/api/v1", paymentRoutes);
 
 /**
  * 404 Handler

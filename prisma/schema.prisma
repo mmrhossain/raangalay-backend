@@ -15,137 +15,52 @@ datasource db {
 // Auth & RBAC model starts here. Critical for security and access control.
 
 model User {
-  id              String     @id @default(uuid())
-  name            String?
-  firstName       String
-  lastName        String?
-  email           String     @unique
-  phone           String?    @unique
-  password        String?
-  image           String?
-  emailVerified   Boolean    @default(false)
-  isPhoneVerified Boolean    @default(false)
-  isApproved      Boolean    @default(false)
-  status          UserStatus @default(ACTIVE)
-  role            UserRole   @default(CUSTOMER)
+  id            String   @id
+  name          String
+  email         String
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  role          UserRole @default(CUSTOMER)
+  isApproved    Boolean? @default(false)
 
   sessions               Session[]
-  refreshTokens          RefreshToken[]
+  accounts               Account[]
   notifications          Notification[]
   notificationPreference UserNotificationPreference?
   customerProfile        CustomerProfile?
   pushDevices            PushDevice[]
-  accounts               Account[]
   vendorProfile          VendorProfile?
 
-  // below comment out fields are required future plan
-  // communicationEvents    CommunicationEvent[]
-  // auditLogs              AuditLog[]
-  // eventLogs              EventLog[]
-
-  roleId        String
-  roleRelation  Role   @relation(fields: [roleId], references: [id])
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  @@index([email])
-  @@index([phone])
-  @@index([roleId])
-  @@index([status])
-}
-
-model Role {
-  id          String  @id @default(uuid())
-  name        String  @unique
-  description String?
-
-  users       User[]
-  permissions RolePermission[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([name])
-}
-
-model Permission {
-  id          String  @id @default(uuid())
-  name        String  @unique
-  description String?
-
-  roles RolePermission[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([name])
-}
-
-model RolePermission {
-  roleId String
-  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
-
-  permissionId String
-  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-
-  assignedAt DateTime @default(now())
-
-  @@id([roleId, permissionId])
-  @@index([roleId])
-  @@index([permissionId])
+  @@unique([email])
+  @@unique([role])
+  @@map("user")
 }
 
 model Session {
-  id              String        @id @default(uuid())
-  token           String        @unique
-  deviceName      String?
-  browser         String?
-  operatingSystem String?
-  ipAddress       String?
-  userAgent       String?
-  status          SessionStatus @default(ACTIVE)
-
-  refreshTokens RefreshToken[]
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  lastActivityAt DateTime?
-  expiresAt      DateTime
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-  deletedAt      DateTime?
-
-  @@index([userId])
-  @@index([status])
-  @@index([expiresAt])
-}
-
-model RefreshToken {
-  id    String @id @default(uuid())
-  token String @unique
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  sessionId String?
-  session   Session? @relation(fields: [sessionId], references: [id])
-
+  id        String   @id
   expiresAt DateTime
-  revokedAt DateTime?
-  createdAt DateTime  @default(now())
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([token])
   @@index([userId])
-  @@index([sessionId])
-  @@index([expiresAt])
+  @@map("session")
 }
 
 model Account {
-  id                    String    @id @default(uuid())
+  id                    String    @id
+  issuer                String
   accountId             String
   providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -153,35 +68,45 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  @@unique([issuer, accountId], map: "account_issuer_accountId_uidx")
   @@index([userId])
+  @@map("account")
 }
 
 model Verification {
-  id         String   @id @default(uuid())
+  id         String   @id
   identifier String
   value      String
   expiresAt  DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([identifier])
+  @@map("verification")
+}
+
+model Jwks {
+  id         String    @id
+  publicKey  String
+  privateKey String
+  createdAt  DateTime
+  expiresAt  DateTime?
+  alg        String?
+  crv        String?
+
+  @@map("jwks")
 }
 
 model VendorProfile {
-  id          String   @id @default(uuid())
+  id          String  @id @default(uuid())
   shopName    String?
-  shopSlug    String   @unique
+  shopSlug    String  @unique
   description String?
   logo        String?
-  isApproved  Boolean  @default(false)
+  isApproved  Boolean @default(false)
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -196,6 +121,7 @@ model VendorProfile {
 // End of Auth & RBAC models. Critical for security and access control.
 
 // Product Catalog models start here. Critical for core e-commerce functionality.
+
 model Category {
   id          String  @id @default(uuid())
   name        String
@@ -366,12 +292,12 @@ model ProductImage {
 }
 
 model Review {
-  id                String   @id @default(uuid())
-  rating            Int
-  comment           String?
-  images            String[]
-  isApproved        Boolean  @default(false)
-  verifiedPurchase  Boolean  @default(false)
+  id               String   @id @default(uuid())
+  rating           Int
+  comment          String?
+  images           String[]
+  isApproved       Boolean  @default(false)
+  verifiedPurchase Boolean  @default(false)
 
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -391,6 +317,7 @@ model Review {
 // End of Product Catalog models. Critical for core e-commerce functionality.
 
 // Customer & Order Management models start here. Critical for CRM, order processing, and customer experience.
+
 model CustomerProfile {
   id            String    @id @default(uuid())
   customerCode  String    @unique
@@ -586,6 +513,7 @@ model CartActivity {
 }
 
 //For mobile app and anonymous users.
+
 model GuestCart {
   id        String @id @default(uuid())
   sessionId String @unique
@@ -1127,6 +1055,7 @@ model ShipmentEvent {
 // end of Payment & Inventory models. Critical for payment processing, inventory management, and order fulfillment.
 
 // Promotion & Marketing models start here. Critical for customer acquisition, retention, and revenue growth.
+
 model Coupon {
   id                    String       @id @default(uuid())
   code                  String       @unique
@@ -1993,6 +1922,7 @@ model PushDevice {
 // end of Marketplace & External System models. Critical for multi-channel selling, external system mapping, and marketplace management.
 
 // Content Management models start here. Critical for website content, SEO, and marketing.
+
 model CMSPage {
   id              String        @id @default(uuid())
   title           String
@@ -2164,6 +2094,7 @@ model SeoMetadata {
 // end of SEO & Marketing models. Critical for search engine optimization, marketing campaigns, and user engagement.
 
 // Media & Asset Management models start here. Critical for managing media assets, AI content, and digital resources.
+
 model MediaAsset {
   id       String  @id @default(uuid())
   publicId String  @unique
@@ -2298,6 +2229,7 @@ model MediaAsset {
 // end of Sales Channel & Marketplace models. Critical for multi-channel selling, marketplace management, and external system integration.
 
 // enum type start
+
 enum UserRole {
   CUSTOMER
   ADMIN
@@ -2361,6 +2293,7 @@ enum PaymentTransactionStatus {
   CANCELLED
   REFUNDED
   PARTIALLY_REFUNDED
+  COLLECTED
 }
 
 enum RefundStatus {

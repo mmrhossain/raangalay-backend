@@ -52,13 +52,10 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Role: 'Role',
-  Permission: 'Permission',
-  RolePermission: 'RolePermission',
   Session: 'Session',
-  RefreshToken: 'RefreshToken',
   Account: 'Account',
   Verification: 'Verification',
+  Jwks: 'Jwks',
   VendorProfile: 'VendorProfile',
   Category: 'Category',
   Brand: 'Brand',
@@ -147,94 +144,38 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  firstName: 'firstName',
-  lastName: 'lastName',
   email: 'email',
-  phone: 'phone',
-  password: 'password',
-  image: 'image',
   emailVerified: 'emailVerified',
-  isPhoneVerified: 'isPhoneVerified',
-  isApproved: 'isApproved',
-  status: 'status',
-  role: 'role',
-  roleId: 'roleId',
+  image: 'image',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt'
+  role: 'role',
+  isApproved: 'isApproved'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const RoleScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
-
-
-export const PermissionScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PermissionScalarFieldEnum = (typeof PermissionScalarFieldEnum)[keyof typeof PermissionScalarFieldEnum]
-
-
-export const RolePermissionScalarFieldEnum = {
-  roleId: 'roleId',
-  permissionId: 'permissionId',
-  assignedAt: 'assignedAt'
-} as const
-
-export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
-
-
 export const SessionScalarFieldEnum = {
   id: 'id',
-  token: 'token',
-  deviceName: 'deviceName',
-  browser: 'browser',
-  operatingSystem: 'operatingSystem',
-  ipAddress: 'ipAddress',
-  userAgent: 'userAgent',
-  status: 'status',
-  userId: 'userId',
-  lastActivityAt: 'lastActivityAt',
   expiresAt: 'expiresAt',
+  token: 'token',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt'
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  userId: 'userId'
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
-export const RefreshTokenScalarFieldEnum = {
-  id: 'id',
-  token: 'token',
-  userId: 'userId',
-  sessionId: 'sessionId',
-  expiresAt: 'expiresAt',
-  revokedAt: 'revokedAt',
-  createdAt: 'createdAt'
-} as const
-
-export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
-
-
 export const AccountScalarFieldEnum = {
   id: 'id',
+  issuer: 'issuer',
   accountId: 'accountId',
   providerId: 'providerId',
+  userId: 'userId',
   accessToken: 'accessToken',
   refreshToken: 'refreshToken',
   idToken: 'idToken',
@@ -242,7 +183,6 @@ export const AccountScalarFieldEnum = {
   refreshTokenExpiresAt: 'refreshTokenExpiresAt',
   scope: 'scope',
   password: 'password',
-  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -260,6 +200,19 @@ export const VerificationScalarFieldEnum = {
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+export const JwksScalarFieldEnum = {
+  id: 'id',
+  publicKey: 'publicKey',
+  privateKey: 'privateKey',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt',
+  alg: 'alg',
+  crv: 'crv'
+} as const
+
+export type JwksScalarFieldEnum = (typeof JwksScalarFieldEnum)[keyof typeof JwksScalarFieldEnum]
 
 
 export const VendorProfileScalarFieldEnum = {

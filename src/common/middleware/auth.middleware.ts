@@ -24,9 +24,13 @@ const toHeaders = (headers: IncomingHttpHeaders): Headers => {
 
 export const requireAuth = asyncHandler(
   async (req: Request, _res: Response, next: NextFunction) => {
+
+      console.log("headers:", req.headers);
     const session = await auth.api.getSession({
       headers: toHeaders(req.headers),
     });
+
+      console.log("session:", session);
 
     if (!session) {
       throw new AppError("Unauthorized: authentication required", 401);
@@ -37,15 +41,15 @@ export const requireAuth = asyncHandler(
   }
 );
 
-export const optionalAuth = asyncHandler(
-  async (req: Request, _res: Response, next: NextFunction) => {
-    const session = await auth.api.getSession({
-      headers: toHeaders(req.headers),
-    });
-    req.auth = session;
-    next();
-  }
-);
+// export const optionalAuth = asyncHandler(
+//   async (req: Request, _res: Response, next: NextFunction) => {
+//     const session = await auth.api.getSession({
+//       headers: toHeaders(req.headers),
+//     });
+//     req.auth = session;
+//     next();
+//   }
+// );
 
 export const requireRole =
   (...roles: AuthRole[]) =>
