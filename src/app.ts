@@ -17,6 +17,7 @@ import catalogRoutes from "./modules/catalog/index.ts";
 import cartRoutes from "./modules/cart/cart.routes.ts";
 import orderRoutes from "./modules/order/index.ts";
 import paymentRoutes from "./modules/payment/index.ts";
+import couponRoutes from "./modules/coupon/coupon.routes.ts";
 import {auth} from "./lib/auth.ts";
 
 const app: Application = express();
@@ -111,6 +112,7 @@ app.use("/api/v1", catalogRoutes);
 app.use("/api/v1", cartRoutes);
 app.use("/api/v1", orderRoutes);
 app.use("/api/v1", paymentRoutes);
+app.use("/api/v1", couponRoutes);
 
 /**
  * 404 Handler
