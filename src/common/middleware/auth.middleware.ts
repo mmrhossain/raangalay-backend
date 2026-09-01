@@ -41,15 +41,15 @@ export const requireAuth = asyncHandler(
   }
 );
 
-// export const optionalAuth = asyncHandler(
-//   async (req: Request, _res: Response, next: NextFunction) => {
-//     const session = await auth.api.getSession({
-//       headers: toHeaders(req.headers),
-//     });
-//     req.auth = session;
-//     next();
-//   }
-// );
+export const optionalAuth = asyncHandler(
+  async (req: Request, _res: Response, next: NextFunction) => {
+    const session = await auth.api.getSession({
+      headers: toHeaders(req.headers),
+    });
+    req.auth = session;
+    next();
+  }
+);
 
 export const requireRole =
   (...roles: AuthRole[]) =>

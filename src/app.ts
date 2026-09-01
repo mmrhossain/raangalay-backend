@@ -20,6 +20,7 @@ import paymentRoutes from "./modules/payment/index.ts";
 import couponRoutes from "./modules/coupon/coupon.routes.ts";
 import wishlistRoutes from "./modules/wishlist/index.ts";
 import reviewRoutes from "./modules/review/index.ts";
+import aiRoutes from "./modules/ai/index.ts";
 import {auth} from "./lib/auth.ts";
 
 const app: Application = express();
@@ -117,6 +118,7 @@ app.use("/api/v1", paymentRoutes);
 app.use("/api/v1", couponRoutes);
 app.use("/api/v1", wishlistRoutes);
 app.use("/api/v1", reviewRoutes);
+app.use("/api/v1", aiRoutes);
 
 /**
  * 404 Handler

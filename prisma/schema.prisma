@@ -184,7 +184,6 @@ model Product {
   variants          ProductVariant[]
   images            ProductImage[]
   reviews           Review[]
-  promotionProducts PromotionProduct[]
 
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
@@ -1077,9 +1076,6 @@ model Coupon {
 
   usages CouponUsage[]
 
-  campaignId String?
-  campaign   Campaign? @relation(fields: [campaignId], references: [id])
-
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -1105,64 +1101,6 @@ model CouponUsage {
 
   @@index([couponId])
   @@index([customerProfileId])
-}
-
-model Campaign {
-  id          String   @id @default(uuid())
-  name        String
-  slug        String   @unique
-  description String?
-  bannerImage String?
-  startsAt    DateTime
-  expiresAt   DateTime
-  isActive    Boolean  @default(true)
-
-  coupons    Coupon[]
-  promotions Promotion[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Promotion {
-  id            String        @id @default(uuid())
-  name          String
-  description   String?
-  promotionType PromotionType
-  discountType  DiscountType
-  discountValue Decimal       @db.Decimal(18, 2)
-  startsAt      DateTime
-  expiresAt     DateTime
-  isActive      Boolean       @default(true)
-
-  products   PromotionProduct[]
-  categories PromotionCategory[]
-
-  campaignId String?
-  campaign   Campaign? @relation(fields: [campaignId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model PromotionProduct {
-  promotionId String
-  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
-
-  productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@id([promotionId, productId])
-}
-
-model PromotionCategory {
-  promotionId String
-  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
-
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-
-  @@id([promotionId, categoryId])
 }
 
 // model GiftCard {
@@ -2396,13 +2334,6 @@ enum CouponStatus {
   ACTIVE
   EXPIRED
   DISABLED
-}
-
-enum PromotionType {
-  PRODUCT
-  CATEGORY
-  ORDER
-  BUY_X_GET_Y
 }
 
 enum GiftCardStatus {

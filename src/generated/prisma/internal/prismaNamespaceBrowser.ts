@@ -103,10 +103,6 @@ export const ModelName = {
   ShipmentEvent: 'ShipmentEvent',
   Coupon: 'Coupon',
   CouponUsage: 'CouponUsage',
-  Campaign: 'Campaign',
-  Promotion: 'Promotion',
-  PromotionProduct: 'PromotionProduct',
-  PromotionCategory: 'PromotionCategory',
   NotificationTemplate: 'NotificationTemplate',
   Notification: 'Notification',
   NotificationLog: 'NotificationLog',
@@ -918,7 +914,6 @@ export const CouponScalarFieldEnum = {
   isActive: 'isActive',
   applicableProductIds: 'applicableProductIds',
   applicableCategoryIds: 'applicableCategoryIds',
-  campaignId: 'campaignId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
@@ -937,56 +932,6 @@ export const CouponUsageScalarFieldEnum = {
 } as const
 
 export type CouponUsageScalarFieldEnum = (typeof CouponUsageScalarFieldEnum)[keyof typeof CouponUsageScalarFieldEnum]
-
-
-export const CampaignScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug',
-  description: 'description',
-  bannerImage: 'bannerImage',
-  startsAt: 'startsAt',
-  expiresAt: 'expiresAt',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
-
-
-export const PromotionScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  promotionType: 'promotionType',
-  discountType: 'discountType',
-  discountValue: 'discountValue',
-  startsAt: 'startsAt',
-  expiresAt: 'expiresAt',
-  isActive: 'isActive',
-  campaignId: 'campaignId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PromotionScalarFieldEnum = (typeof PromotionScalarFieldEnum)[keyof typeof PromotionScalarFieldEnum]
-
-
-export const PromotionProductScalarFieldEnum = {
-  promotionId: 'promotionId',
-  productId: 'productId'
-} as const
-
-export type PromotionProductScalarFieldEnum = (typeof PromotionProductScalarFieldEnum)[keyof typeof PromotionProductScalarFieldEnum]
-
-
-export const PromotionCategoryScalarFieldEnum = {
-  promotionId: 'promotionId',
-  categoryId: 'categoryId'
-} as const
-
-export type PromotionCategoryScalarFieldEnum = (typeof PromotionCategoryScalarFieldEnum)[keyof typeof PromotionCategoryScalarFieldEnum]
 
 
 export const NotificationTemplateScalarFieldEnum = {

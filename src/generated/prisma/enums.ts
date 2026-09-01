@@ -230,16 +230,6 @@ export const CouponStatus = {
 export type CouponStatus = (typeof CouponStatus)[keyof typeof CouponStatus]
 
 
-export const PromotionType = {
-  PRODUCT: 'PRODUCT',
-  CATEGORY: 'CATEGORY',
-  ORDER: 'ORDER',
-  BUY_X_GET_Y: 'BUY_X_GET_Y'
-} as const
-
-export type PromotionType = (typeof PromotionType)[keyof typeof PromotionType]
-
-
 export const GiftCardStatus = {
   ACTIVE: 'ACTIVE',
   REDEEMED: 'REDEEMED',

@@ -15,6 +15,9 @@ const envSchema = z.object({
   // Redis
   REDIS_URL: z.string().optional(),
 
+  // Gemini AI
+  GEMINI_API_KEY: z.string().optional(),
+
   // JWT
   ACCESS_TOKEN_SECRET: z.string(),
   ACCESS_TOKEN_EXPIRES_IN: z.string(),

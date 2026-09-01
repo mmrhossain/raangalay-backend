@@ -278,26 +278,6 @@ export type Coupon = Prisma.CouponModel
  */
 export type CouponUsage = Prisma.CouponUsageModel
 /**
- * Model Campaign
- * 
- */
-export type Campaign = Prisma.CampaignModel
-/**
- * Model Promotion
- * 
- */
-export type Promotion = Prisma.PromotionModel
-/**
- * Model PromotionProduct
- * 
- */
-export type PromotionProduct = Prisma.PromotionProductModel
-/**
- * Model PromotionCategory
- * 
- */
-export type PromotionCategory = Prisma.PromotionCategoryModel
-/**
  * Model NotificationTemplate
  * 
  */
