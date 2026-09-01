@@ -75,7 +75,9 @@ export const createReview = async (
       select: {
         id: true,
         status: true,
-        items: { select: { productId: true } },
+        items: {
+          select: { variant: { select: { productId: true } } },
+        },
       },
     });
 
@@ -83,7 +85,7 @@ export const createReview = async (
 
     verifiedPurchase =
       order.status === "DELIVERED" &&
-      order.items.some((item) => item.productId === productId);
+      order.items.some((item) => item.variant?.productId === productId);
   }
 
   return prisma.review.create({

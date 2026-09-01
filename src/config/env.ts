@@ -44,6 +44,7 @@ const envSchema = z.object({
 
   // Resend
   RESEND_API_KEY: z.string().optional(),
+  RESEND_FROM: z.string().optional(),
 
   // Cloudinary
   CLOUDINARY_CLOUD_NAME: z.string().optional(),

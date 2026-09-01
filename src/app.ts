@@ -116,6 +116,7 @@ app.use("/api/v1", orderRoutes);
 app.use("/api/v1", paymentRoutes);
 app.use("/api/v1", couponRoutes);
 app.use("/api/v1", wishlistRoutes);
+app.use("/api/v1", reviewRoutes);
 
 /**
  * 404 Handler

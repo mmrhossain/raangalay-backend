@@ -132,7 +132,6 @@ model Category {
 
   children            Category[]          @relation("CategoryHierarchy")
   products            Product[]
-  promotionCategories PromotionCategory[]
 
   parentId String?
   parent   Category? @relation("CategoryHierarchy", fields: [parentId], references: [id])
