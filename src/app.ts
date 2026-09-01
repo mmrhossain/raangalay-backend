@@ -1,9 +1,11 @@
+import "./lib/openapi/registry.ts";
 import express, { type Application } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import swaggerUi from "swagger-ui-express";
 
 import { env } from "./config/env.ts";
 import { limiter } from "./common/middleware/rate-limit.middleware.ts";
@@ -22,6 +24,7 @@ import wishlistRoutes from "./modules/wishlist/index.ts";
 import reviewRoutes from "./modules/review/index.ts";
 import aiRoutes from "./modules/ai/index.ts";
 import {auth} from "./lib/auth.ts";
+import { generateOpenApiDocument } from "./lib/openapi/document.ts";
 
 const app: Application = express();
 
@@ -107,6 +110,25 @@ app.get("/health", (_, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+/**
+ * OpenAPI / Swagger (non-production, or ENABLE_API_DOCS=true)
+ */
+if (env.enableApiDocs) {
+  const openApiDocument = generateOpenApiDocument();
+
+  app.get("/api-docs.json", (_req, res) => {
+    res.status(200).json(openApiDocument);
+  });
+
+  app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(openApiDocument, {
+      customSiteTitle: "Raangalay API Docs",
+    })
+  );
+}
 
 /**
  * API Routes

@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/md-mhossain/raangalay-backend#readme",
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^9.1.0",
     "@better-auth/prisma-adapter": "^1.7.2",
     "@google/genai": "^2.20.0",
     "@prisma/adapter-pg": "^7.8.0",
@@ -69,6 +70,8 @@
     "@prisma/engines@7.8.0": true,
     "prisma@7.8.0": true,
     "@scarf/scarf@1.4.0": true,
-    "esbuild@0.28.2": true
+    "esbuild@0.28.2": true,
+    "@google/genai@2.20.0": true,
+    "protobufjs@7.6.6": true
   }
 }

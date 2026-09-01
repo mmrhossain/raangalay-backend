@@ -6,10 +6,21 @@ const globalForRedis = globalThis as unknown as {
   redis: Redis | null | undefined;
 };
 
-function createRedisClient(): Redis | null {
-  try {
-    const url = env.REDIS_URL || "redis://127.0.0.1:6379";
+function isRedisUrl(value: string): boolean {
+  return value.startsWith("redis://") || value.startsWith("rediss://");
+}
 
+function createRedisClient(): Redis | null {
+  const url = env.REDIS_URL;
+
+  if (!url || !isRedisUrl(url)) {
+    if (url) {
+      logger.warn("REDIS_URL is not a redis:// or rediss:// URL; Redis disabled");
+    }
+    return null;
+  }
+
+  try {
     const client = new Redis(url, {
       maxRetriesPerRequest: 1,
       enableOfflineQueue: false,

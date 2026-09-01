@@ -102,9 +102,8 @@ function buildProductContext(products: Awaited<ReturnType<typeof listProducts>>[
 
   return products
     .map((p) => {
-      const price = p.variants.length
-        ? `${p.variants[0].price}`
-        : "not listed";
+      const first = p.variants[0];
+      const price = first ? `${first.price}` : "not listed";
       const category = p.category?.name ?? "uncategorized";
       const brand = p.brand?.name ?? "no brand";
       const description = p.shortDescription ?? "";
@@ -122,6 +121,7 @@ async function getProductContext(query: string): Promise<string> {
   const result = await listProducts({
     page: 1,
     limit: 5,
+    sort: "newest",
     search: extractSearchQuery(query),
   });
 
@@ -241,6 +241,6 @@ export async function chat(input: ChatInput): Promise<ChatResult> {
   return {
     answer,
     cached: false,
-    conversationId: input.conversationId,
+    conversationId: input.conversationId!,
   };
 }

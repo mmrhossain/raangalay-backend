@@ -1,5 +1,5 @@
-import rateLimit from "express-rate-limit";
-import { RedisStore } from "rate-limit-redis";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
+import { RedisStore, type RedisReply } from "rate-limit-redis";
 import { env } from "../../config/env.ts";
 import { redis } from "../../lib/redis.ts";
 
@@ -62,11 +62,17 @@ export const aiChatLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   passOnStoreError: true,
-  keyGenerator: (req) => req.auth?.user.id ?? req.ip ?? "unknown",
-  store: new RedisStore({
-    sendCommand: (...args: string[]) => redis!.call(...args),
-    prefix: "ai:rl:",
-  }),
+  keyGenerator: (req) =>
+    req.auth?.user.id ?? ipKeyGenerator(req.ip ?? "unknown"),
+  ...(redis
+    ? {
+        store: new RedisStore({
+          sendCommand: (command: string, ...args: string[]) =>
+            redis.call(command, ...args) as Promise<RedisReply>,
+          prefix: "ai:rl:",
+        }),
+      }
+    : {}),
   message: {
     success: false,
     message: "Too many AI requests. Please try again later.",

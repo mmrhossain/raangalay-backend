@@ -66,6 +66,9 @@ const envSchema = z.object({
 
   // Cache
   ENABLE_CACHE: z.string().default("false"),
+
+  // API docs (Swagger UI). Enabled in non-production, or when set to "true".
+  ENABLE_API_DOCS: z.string().optional(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -89,4 +92,8 @@ export const env = {
   enableCache: parsedEnv.data.ENABLE_CACHE === "true",
 
   urlEncoded: parsedEnv.data.URL_ENCODED === "true",
+
+  enableApiDocs:
+    parsedEnv.data.NODE_ENV !== "production" ||
+    parsedEnv.data.ENABLE_API_DOCS === "true",
 };
